@@ -983,10 +983,30 @@ category = "dev"
 optional = false
 python-versions = "*"
 
+[[package]]
+name = "xgboost"
+version = "1.7.2"
+description = "XGBoost Python Package"
+category = "main"
+optional = false
+python-versions = ">=3.8"
+
+[package.dependencies]
+numpy = "*"
+scipy = "*"
+
+[package.extras]
+dask = ["dask", "distributed", "pandas"]
+datatable = ["datatable"]
+pandas = ["pandas"]
+plotting = ["graphviz", "matplotlib"]
+pyspark = ["cloudpickle", "pyspark", "scikit-learn"]
+scikit-learn = ["scikit-learn"]
+
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "f6d71783c92a46cd6d1c74b55e0c36026f0915d7304450d2cc6e3478a85bac3d"
+content-hash = "cef93bb2611c8391bd2246f0f051d8051390a7ad02c43c8bfa35955779b4d94a"
 
 [metadata.files]
 appnope = [
@@ -1915,4 +1935,12 @@ urllib3 = [
 wcwidth = [
     {file = "wcwidth-0.2.5-py2.py3-none-any.whl", hash = "sha256:beb4802a9cebb9144e99086eff703a642a13d6a0052920003a230f3294bbe784"},
     {file = "wcwidth-0.2.5.tar.gz", hash = "sha256:c4d647b99872929fdb7bdcaa4fbe7f01413ed3d98077df798530e5b04f116c83"},
+]
+xgboost = [
+    {file = "xgboost-1.7.2-py3-none-macosx_10_15_x86_64.macosx_11_0_x86_64.macosx_12_0_x86_64.whl", hash = "sha256:011126d470179177486e92c6a52c3f5deb9dd3e07a65eec5df9bf7dd1a70d2d0"},
+    {file = "xgboost-1.7.2-py3-none-macosx_12_0_arm64.whl", hash = "sha256:a3cf6d2e6e56147546a725d8301f06af33b8467179e17b11f63be9a6d7a9ccd3"},
+    {file = "xgboost-1.7.2-py3-none-manylinux2014_aarch64.whl", hash = "sha256:6f192542fbee7f07891a3b78616ef1f87013e22e33836507344a230188db784e"},
+    {file = "xgboost-1.7.2-py3-none-manylinux2014_x86_64.whl", hash = "sha256:51351d0a5e26016c348df23cdb2069a26bf41a9e586a24e552078435a110510a"},
+    {file = "xgboost-1.7.2-py3-none-win_amd64.whl", hash = "sha256:08ca6b3400dfd16f6159b2881f41b7443024339c14c5dbe10bba117af79126ab"},
+    {file = "xgboost-1.7.2.tar.gz", hash = "sha256:f1a749aedb9330afc48007cc78b8bbbbea35ce372f48a2735f9c71bbc7b8dcfb"},
 ]
