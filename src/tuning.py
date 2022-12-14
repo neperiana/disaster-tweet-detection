@@ -3,12 +3,13 @@ import pandas as pd
 
 from sklearn.model_selection import StratifiedKFold
 from sklearn.model_selection import ParameterGrid
-from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import f1_score, roc_auc_score
 
+from src.preprocessing import TextToFeatures
 
-def parameter_search(model_class, param_grid, n_splits, X, y):
+
+def parameter_search(model_class, param_grid, X, y, n_splits=3, vect_type='tfidf-vec'):
     """
     Applies corss-validation to search for best parameters for a certain model.
 
@@ -18,12 +19,15 @@ def parameter_search(model_class, param_grid, n_splits, X, y):
         Sklearn estimator class to be used.
     param_grid : string
         Dictionary of parameter options.
-    n_splits: int
-        Number of splits in cross-validation.
     X : pandas.Dataframe (n_samples, n_columns)
         Training/validation set.
     y : array-like of shape (n_samples,)
         Array of original class labels per sample.
+    n_splits: int
+        Number of splits in cross-validation.
+    vect_type: str, default='tfidf-vec'
+        Type of feature extraction applied to text. 
+        Either tf-idf or sentence-BERT.
 
     Returns
     -------
@@ -60,16 +64,16 @@ def parameter_search(model_class, param_grid, n_splits, X, y):
 
             # Extract text features
             max_features = params.pop('max_features', None)
-            vectorizer = TfidfVectorizer(max_features=max_features) 
+            vectorizer = TextToFeatures(type=vect_type)
             X_train_dtm = vectorizer.fit_transform(X_train['clean_text'])
             X_val_dtm = vectorizer.transform(X_val['clean_text'])
 
             # Train model
             clf = model_class(scale_pos_weight=scale_pos_weight, **params)
-            clf.fit(X_train_dtm.toarray(), y_train)
+            clf.fit(X_train_dtm, y_train)
 
             # Get predictions
-            y_val_pred = clf.predict(X_val_dtm.toarray())
+            y_val_pred = clf.predict(X_val_dtm)
 
             # Score predictions
             this_result['tn'], this_result['fp'], this_result['fn'], this_result['tp'] = confusion_matrix(
