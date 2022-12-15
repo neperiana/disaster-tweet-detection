@@ -1,7 +1,7 @@
 
 import pandas as pd
 
-from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
 from sentence_transformers import SentenceTransformer
 
 import nltk
@@ -62,7 +62,7 @@ class TextToFeatures(object):
         max_features : int, default=250
             Max number of features to extract for tf-idf.
     """
-    valid_types = ['tfidf-vec', 'sentence-BERT']
+    valid_types = ['tfidf-vec', 'count-vec', 'sentence-BERT']
 
     def __init__(self, type='tfidf-vec', max_features=250):
         assert type in self.valid_types, f"Type is {type} and should be one of {self.valid_types}"
@@ -110,12 +110,16 @@ class TextToFeatures(object):
 
         if self._type == 'tfidf-vec':
             self._fit_tfidf(raw_documents)
+        elif self._type == 'count-vec':
+            self._fit_count(raw_documents)
         elif self._type == 'sentence-BERT':
             self._fit_sentence_BERT(raw_documents)
     
     def _transform(self, raw_documents):
         if self._type == 'tfidf-vec':
             return self._transform_tfidf(raw_documents)
+        elif self._type == 'count-vec':
+            return self._transform_count(raw_documents)
         elif self._type == 'sentence-BERT':
             return self._transform_sentence_BERT(raw_documents)
 
@@ -124,6 +128,13 @@ class TextToFeatures(object):
         self._vectorizer.fit(raw_documents)
     
     def _transform_tfidf(self, raw_documents):
+        return self._vectorizer.transform(raw_documents).toarray()
+
+    def _fit_count(self, raw_documents):
+        self._vectorizer = CountVectorizer(max_features=self._max_features) 
+        self._vectorizer.fit(raw_documents)
+    
+    def _transform_count(self, raw_documents):
         return self._vectorizer.transform(raw_documents).toarray()
 
     def _fit_sentence_BERT(self, raw_documents):

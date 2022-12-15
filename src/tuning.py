@@ -62,11 +62,20 @@ def parameter_search(model_class, param_grid, X, y, n_splits=3, vect_type='tfidf
             this_result = params.copy()
             print('.', end='')
 
-            # Extract text features
+            # Extract text features - BERT
+            BERT_vectorizer = TextToFeatures(type='sentence-BERT')
+            X_train_dtm_a = BERT_vectorizer.fit_transform(X_train['clean_text']).to_numpy()
+            X_val_dtm_a = BERT_vectorizer.transform(X_val['clean_text']).to_numpy()
+
+            # Extract text features - keywords
             max_features = params.pop('max_features', None)
-            vectorizer = TextToFeatures(type=vect_type)
-            X_train_dtm = vectorizer.fit_transform(X_train['clean_text'])
-            X_val_dtm = vectorizer.transform(X_val['clean_text'])
+            tfidf_vectorizer = TextToFeatures(type='count-vec')
+            X_train_dtm_b = tfidf_vectorizer.fit_transform(X_train['keyword'])
+            X_val_dtm_b = tfidf_vectorizer.transform(X_val['keyword'])
+
+            # Join 
+            X_train_dtm = np.concatenate([X_train_dtm_a, X_train_dtm_b], axis=1)
+            X_val_dtm = np.concatenate([X_val_dtm_a, X_val_dtm_b], axis=1)
 
             # Train model
             clf = model_class(scale_pos_weight=scale_pos_weight, **params)

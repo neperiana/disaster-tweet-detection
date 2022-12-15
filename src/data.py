@@ -23,6 +23,10 @@ def get_data():
     train = pd.read_csv('../data/train.csv')
     test = pd.read_csv('../data/test.csv')
 
+    # Fill keywords
+    train['keyword'].fillna('', inplace=True)
+    test['keyword'].fillna('', inplace=True)
+
     # Clean text
     train['clean_text'] = train['text'].apply(preprocess_text)
     test['clean_text'] = test['text'].apply(preprocess_text)
